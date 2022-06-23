@@ -36,11 +36,7 @@ def data() -> Dict[str, Any]:
         time.sleep(latency)
 
     r = httpx.get(os.getenv("PRODUCER_URL"))  # type: ignore
-    return {
-        "data": r.json(),
-        "status": r.status_code,
-        "duration": r.elapsed
-    }
+    return {"data": r.json(), "status": r.status_code, "duration": r.elapsed}
 
 
 @app.get("/health")
