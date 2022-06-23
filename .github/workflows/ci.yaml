@@ -1,0 +1,52 @@
+name: Build and deliver consumer application
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  ci:
+    runs-on: ubuntu-22.04
+    concurrency: 
+      group: ${{ github.ref }}
+      cancel-in-progress: true
+    env:
+      IMAGE_NAME: lawouach/consumer
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure Docker
+      run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD:  ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Configure Reliably
+      uses: reliablyhq/actions/setup@v1
+
+    - name: Build Docker image
+      run: docker build -t $IMAGE_NAME .
+
+    - name: Install dependencies
+      run: pip install --no-cache-dir --prefer-binary -r requirements.txt -r requirements-dev.txt
+
+    - name: Verify code format
+      run: black --check --diff --line-length=80 app
+
+    - name: Test our application
+      run: pytest --mypy -v -rxs --cov=app --cov-fail-under=100 --cov-report term-missing:skip-covered --cov-report xml --junitxml=junit-test-results.xml app/test.py
+
+    # - name: Deploy only if has enough error budgets left
+    #   uses: reliablyhq/actions/status@v2
+    #   env:
+    #     RELIABLY_TOKEN: ${{ secrets.RELIABLY_TOKEN }}
+    #     RELIABLY_ORG: demoday
+    #   with:
+    #     selector: service=consumer,provider=kubernetes
+    #     if_lacking_budget: fail
+
+    - name: Deliver Docker image
+      run: docker push $IMAGE_NAME

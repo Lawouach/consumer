@@ -1,0 +1,7 @@
+pytest
+requests
+pytest-cov
+pytest-sugar
+mypy
+pytest-mypy
+black
