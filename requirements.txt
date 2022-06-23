@@ -3,3 +3,4 @@ uvicorn
 uvloop
 opentelemetry-instrumentation-fastapi
 prometheus-fastapi-instrumentator==5.8.1
+httpx

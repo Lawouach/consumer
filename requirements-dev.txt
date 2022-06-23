@@ -5,3 +5,4 @@ pytest-sugar
 mypy
 pytest-mypy
 black
+respx

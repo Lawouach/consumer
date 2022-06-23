@@ -1,6 +1,9 @@
+import os
 import time
 
 from fastapi.testclient import TestClient
+from httpx import Response
+import respx
 
 from .main import app, get_latency, set_latency
 
@@ -35,3 +38,16 @@ def test_set_latency() -> None:
     assert response.status_code == 200
     assert response.json() == ""
     assert get_latency() == 0.45
+
+
+@respx.mock
+def test_data() -> None:
+    url = "http://example.com"
+    os.environ["PRODUCER_URL"] = url
+
+    d = {"message": "hello there"}
+    r = respx.get(url).mock(return_value=Response(200, json=d))
+
+    response = client.get("/data")
+    assert response.status_code == 200
+    assert response.json() == d
