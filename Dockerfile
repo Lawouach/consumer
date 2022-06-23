@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir --prefer-binary -r requirements.txt
 ENV UVICORN_PORT 8080
 
 ENTRYPOINT [ "uvicorn" ]
-CMD ["--host", "0.0.0.0", "--forwarded-allow-ips", "*", "main:app" ]
+CMD ["--host", "0.0.0.0", "--forwarded-allow-ips", "*", "--root-path", "/consumer", "main:app" ]
