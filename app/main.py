@@ -2,7 +2,7 @@ import time
 from typing import Dict
 
 from fastapi import FastAPI
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor  # type: ignore
 from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
