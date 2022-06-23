@@ -23,14 +23,14 @@ def set_latency(value: float) -> None:
     latency = value
 
 
-@app.get("/consumer")
+@app.get("/")
 def index() -> Dict[str, str]:
     if latency > 0:
         time.sleep(latency)
     return {"Hello": "The World"}
 
 
-@app.get("/consumer/data")
+@app.get("/data")
 def data() -> Dict[str, Any]:
     if latency > 0:
         time.sleep(latency)
@@ -39,12 +39,12 @@ def data() -> Dict[str, Any]:
     return {"data": r.json(), "status": r.status_code, "duration": r.elapsed}
 
 
-@app.get("/consumer/health")
+@app.get("/health")
 def health() -> str:
     return ""
 
 
-@app.get("/consumer/inject/latency")
+@app.get("/inject/latency")
 def inject_latency(value: float = 0) -> str:
     set_latency(value)
     return ""
