@@ -36,7 +36,6 @@ def data() -> Dict[str, str]:
         time.sleep(latency)
 
     r = httpx.get(os.getenv("PRODUCER_URL"))  # type: ignore
-    print(r)
     return cast(Dict[str, str], r.json())
 
 
