@@ -1,6 +1,6 @@
 import os
 import time
-from typing import cast, Dict
+from typing import Any, Dict
 
 from fastapi import FastAPI
 import httpx
@@ -31,12 +31,16 @@ def index() -> Dict[str, str]:
 
 
 @app.get("/data")
-def data() -> Dict[str, str]:
+def data() -> Dict[str, Any]:
     if latency > 0:
         time.sleep(latency)
 
     r = httpx.get(os.getenv("PRODUCER_URL"))  # type: ignore
-    return cast(Dict[str, str], r.json())
+    return {
+        "data": r.json(),
+        "status": r.status_code,
+        "duration": r.elapsed
+    }
 
 
 @app.get("/health")

@@ -1,5 +1,6 @@
 import os
 import time
+from unittest.mock import ANY
 
 from fastapi.testclient import TestClient
 from httpx import Response
@@ -50,4 +51,4 @@ def test_data() -> None:
 
     response = client.get("/data")
     assert response.status_code == 200
-    assert response.json() == d
+    assert response.json() == {"data": d, "status": 200, "duration": ANY}
