@@ -6,3 +6,4 @@ mypy
 pytest-mypy
 black
 respx
+pytest-asyncio

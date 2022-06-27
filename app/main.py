@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 from typing import Any, Dict
@@ -31,12 +32,17 @@ def index() -> Dict[str, str]:
 
 
 @app.get("/consumer/data")
-def data() -> Dict[str, Any]:
+async def data() -> Dict[str, Any]:
     if latency > 0:
-        time.sleep(latency)
+        await asyncio.sleep(latency)
 
-    r = httpx.get(os.getenv("PRODUCER_URL"))  # type: ignore
-    return {"data": r.json(), "status": r.status_code, "duration": r.elapsed}
+    async with httpx.AsyncClient() as client:
+        r = await client.get(os.getenv("PRODUCER_URL"))  # type: ignore
+        return {
+            "data": r.json(),
+            "status": r.status_code,
+            "duration": r.elapsed,
+        }
 
 
 @app.get("/health")

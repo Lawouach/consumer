@@ -4,6 +4,7 @@ from unittest.mock import ANY
 
 from fastapi.testclient import TestClient
 from httpx import Response
+import pytest
 import respx
 
 from .main import app, get_latency, set_latency
@@ -41,8 +42,25 @@ def test_set_latency() -> None:
     assert get_latency() == 0.45
 
 
+@pytest.mark.asyncio
 @respx.mock
-def test_data() -> None:
+async def test_data() -> None:
+    url = "http://example.com"
+    os.environ["PRODUCER_URL"] = url
+
+    d = {"message": "hello there"}
+    r = respx.get(url).mock(return_value=Response(200, json=d))
+
+    response = client.get("/consumer/data")
+    assert response.status_code == 200
+    assert response.json() == {"data": d, "status": 200, "duration": ANY}
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_data_with_latency() -> None:
+    response = client.get("/consumer/inject/latency?value=0.45")
+
     url = "http://example.com"
     os.environ["PRODUCER_URL"] = url
 
