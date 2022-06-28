@@ -58,6 +58,19 @@ async def test_data() -> None:
 
 @pytest.mark.asyncio
 @respx.mock
+async def test_data_on_producer_error() -> None:
+    url = "http://example.com"
+    os.environ["PRODUCER_URL"] = url
+
+    d = {"message": "hello there"}
+    r = respx.get(url).mock(return_value=Response(400))
+
+    response = client.get("/consumer/data")
+    assert response.status_code == 500
+
+
+@pytest.mark.asyncio
+@respx.mock
 async def test_data_with_latency() -> None:
     response = client.get("/consumer/inject/latency?value=0.45")
 

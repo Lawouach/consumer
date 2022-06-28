@@ -37,7 +37,7 @@ jobs:
       run: black --check --diff --line-length=80 app
 
     - name: Test our application
-      run: pytest --mypy -v -rxs --asyncio-mode=strict --cov=app --cov-fail-under=100 --cov-report term-missing:skip-covered --cov-report xml --junitxml=junit-test-results.xml app/test.py
+      run: pytest --mypy -v -rxs --asyncio-mode=strict --cov=app.main --cov-fail-under=100 --cov-report term-missing:skip-covered --cov-report xml --junitxml=junit-test-results.xml app/test.py
 
     # - name: Deploy only if has enough error budgets left
     #   uses: reliablyhq/actions/status@v2
